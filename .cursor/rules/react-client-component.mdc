@@ -1,0 +1,111 @@
+---
+description: rules of best pratices para react client components
+globs: *.tsx
+---
+# Rules for React Client Components in Next.js
+
+## 1. Component Structure
+- Each Client Component should serve a **single purpose**.
+- Avoid placing entire pages, tables, menus, and actions inside a single component.
+- Instead, break them down into:
+  - Table component
+  - Top menus component
+  - Actions component
+- This keeps components modular, reusable, and easier to maintain.
+
+## 2. UI Patterns
+- Use a **left-side card** layout for displaying a summary when working with large forms.
+- The main section should contain the form or primary data.
+- This improves user experience and maintains consistency across the application.
+
+## 3. URL and Navigation with Workspace Router
+- The application is **multi-tenant** with multiple workspaces.
+- Instead of hardcoding URLs, use `useWorkspaceRouter` to generate dynamic links.
+- This ensures navigation remains within the correct workspace context.
+
+## 4. Styling Approach
+- **Use Mantine for basic styling** (e.g., padding, font weight).
+- **Use Tailwind for more complex interactions** like hover effects, conditional styles, or dynamic colors.
+- This hybrid approach balances ease of use and flexibility.
+
+## 5. Handling Forms
+- Forms should be broken down into:
+  - **Main form component** (handles form creation and submission logic)
+  - **Fields component** (contains all input elements)
+  - **Hook for form management** (handles validation and state management)
+- Forms should pass values as props rather than using context unless necessary.
+- This allows the same field component to be used for both creation and editing.
+
+## 6. Handling Data Fetching
+- **Use TRPC with `useSuspenseQuery`** for preloading data before rendering.
+- This avoids loading states on initial render.
+- For actions that require user interaction, use `useQuery` or `useMutation` instead.
+- Use **Zod for validation** to ensure input integrity.
+
+## 7. Correct Example of `useSuspenseQuery`
+
+`useSuspenseQuery` in tRPC returns `[data, queryInfo]`. Always destructure properly, e.g.:
+
+```tsx
+"use client"
+
+import { Flex, Group, Stack, Button, Text } from "@repo/mantine-ui";
+import Image from "next/image";
+import { api } from "#/trpc/react";
+
+// Example Props
+interface SomeProps {
+  sku: string;
+}
+
+export default function SomeComponent({ sku }: SomeProps) {
+  // Correct usage of useSuspenseQuery in tRPC:
+  const [workspaceBuildings] =
+    api.inventory.buildings.getBuildings.useSuspenseQuery()
+
+  const [item, itemQuery] =
+    api.inventory.items.getItemBySku.useSuspenseQuery({
+      sku
+    })
+
+  // Suppose we have an image for preview:
+  const image = item?.mainImage ?? "/placeholder.png";
+
+  // Handle removing or discarding the item:
+  const onRemove = () => {
+    // your logic here
+    console.log("Discard clicked");
+  };
+
+  return (
+    <Flex direction="column" gap={8}>
+      <Text fz={12} c="dimmed">
+        Preview
+      </Text>
+      <Group>
+        <Stack gap={0}>
+          <Image
+            className="relative flex h-[164px] w-full items-center justify-center overflow-hidden rounded-md bg-[#F5F5F5]"
+            src={image}
+            alt="Cropped Preview"
+            width={120}
+            height={120}
+            style={{ objectFit: "contain" }}
+          />
+        </Stack>
+        <Button variant="light" onClick={onRemove}>
+          Discard
+        </Button>
+      </Group>
+    </Flex>
+  )
+}
+```
+
+In the example above:
+1. `useSuspenseQuery` calls from tRPC provide `[data, queryInfo]`.
+2. We apply Tailwind utility classes (e.g., `h-[164px]`, `rounded-md`, `bg-[#F5F5F5]`) inside a Mantine component structure.
+3. This ensures a seamless combination of Mantine for layout and Tailwind for finer styling details.
+
+By following these patterns, we ensure consistency, maintainability, and a better user experience across the application.
+

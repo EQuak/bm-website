@@ -1,0 +1,207 @@
+---
+description: Best practices for implementing Mantine Menus in React/Next.js applications for navigation and action menus
+globs: *.tsx
+alwaysApply: false
+---
+# Mantine Menu Component Best Practices
+
+## Core Guidelines
+
+- Use the Menu component for compact navigation or action menus, such as dropdowns for settings, user profiles, or contextual actions, to save screen space and improve usability.
+- Keep menu items concise and action-oriented, using clear labels (e.g., "Edit," "Delete") to ensure users understand their purpose at a glance.
+- Leverage Menu.Target with interactive elements (e.g., buttons, icons) to trigger the menu, ensuring intuitive access while maintaining accessibility.
+- Use Menu.Divider to group related items visually, enhancing readability for menus with multiple sections or categories.
+- Implement controlled or uncontrolled modes based on use case—use controlled (opened and onChange) for dynamic behavior, and uncontrolled for simpler, static menus.
+- Customize menu appearance with shadow, width, and position props to match your app's design and ensure visibility on different screen sizes.
+- Ensure accessibility by adding aria-label to Menu.Target and testing with keyboard navigation (e.g., Tab, Enter, Arrow keys) and screen readers.
+- Avoid overloading menus with too many items; use submenus (Menu.Item with nested Menu) sparingly and only for hierarchical actions, keeping the primary menu focused.
+
+## Key Props Reference
+
+### Menu Component Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `trigger` | `'hover' \| 'click' \| 'click-hover'` | `'click'` | Controls how the dropdown is triggered - click is most accessible, hover is convenient but less accessible, click-hover works on both desktop and mobile |
+| `opened` | `boolean` | - | Controls dropdown opened state |
+| `onChange` | `(opened: boolean) => void` | - | Called when dropdown opened state changes |
+| `position` | `string` | `'bottom-start'` | Dropdown position relative to target (`bottom`, `top`, `left`, `right` with `-start` or `-end` modifiers) |
+| `offset` | `number` | `5` | Dropdown offset from target element in px |
+| `closeOnItemClick` | `boolean` | `true` | Determines whether dropdown should be closed when item is clicked |
+| `closeOnClickOutside` | `boolean` | `true` | Determines whether dropdown should be closed when user clicks outside of it |
+| `shadow` | `string` | `'sm'` | Shadow from theme or any CSS value |
+| `width` | `number \| 'target' \| string` | - | Dropdown width, or 'target' to match target width |
+| `withArrow` | `boolean` | `false` | Adds an arrow to the dropdown |
+| `transitionProps` | `object` | - | Props to customize dropdown transition |
+| `loop` | `boolean` | `true` | Whether focus should loop through items when the end/beginning is reached |
+| `menuItemTabIndex` | `number` | `-1` | Set to 0 to enable Tab navigation between menu items |
+
+### Menu.Item Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `color` | `string` | - | Item color from theme |
+| `disabled` | `boolean` | `false` | Disables item |
+| `leftSection` | `React.ReactNode` | - | Left section, usually used for icons |
+| `rightSection` | `React.ReactNode` | - | Right section, usually used for shortcuts or additional info |
+| `component` | `any` | `'button'` | Component used as root element (button, a, div, etc.) |
+
+## Explanation of Recommendations
+
+### Compact Navigation/Action Menus
+
+Use Menus for dropdowns like user settings or contextual actions:
+
+```tsx
+import { Menu } from '@mantine/core';
+
+function UserMenu() {
+  return (
+    <Menu>
+      <Menu.Target>
+        <button>Profile</button>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item>Settings</Menu.Item>
+        <Menu.Item>Logout</Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+  );
+}
+```
+
+This saves space and provides quick access to actions.
+
+### Concise Labels
+
+Use short, action-oriented labels like "Edit Profile" or "Delete Item" to avoid confusion:
+
+```tsx
+<Menu.Item>Edit Profile</Menu.Item>
+```
+
+### Interactive Targets
+
+Use Menu.Target with buttons, icons, or other elements for intuitive triggering:
+
+```tsx
+<Menu.Target>
+  <IconUserCircle size={24} />
+</Menu.Target>
+```
+
+### Visual Grouping
+
+Use Menu.Divider to separate related items:
+
+```tsx
+<Menu.Dropdown>
+  <Menu.Item>Settings</Menu.Item>
+  <Menu.Divider />
+  <Menu.Item>Logout</Menu.Item>
+</Menu.Dropdown>
+```
+
+### Controlled vs. Uncontrolled
+
+For dynamic behavior, use controlled mode:
+
+```tsx
+const [opened, setOpened] = useState(false);
+
+<Menu opened={opened} onChange={setOpened}>
+  {/* Menu items */}
+</Menu>
+```
+
+For static menus, uncontrolled mode (default opened) is simpler.
+
+### Customization
+
+Adjust shadow, width, and position for design consistency:
+
+```tsx
+<Menu shadow="md" width={200} position="bottom-end">
+  {/* Menu items */}
+</Menu>
+```
+
+Test on mobile and desktop to ensure visibility.
+
+### Accessibility
+
+Add aria-label and test with keyboard navigation:
+
+```tsx
+<Menu.Target aria-label="User menu">
+  <button>User</button>
+</Menu.Target>
+```
+
+Ensure users can navigate with Arrow keys, Enter, and Space, and verify screen reader compatibility.
+
+### Avoid Overloading
+
+Limit primary menu items to 5–7 for clarity. For more options, use submenus:
+
+```tsx
+<Menu>
+  <Menu.Target>
+    <button>More Actions</button>
+  </Menu.Target>
+  <Menu.Dropdown>
+    <Menu.Item>Action 1</Menu.Item>
+    <Menu>
+      <Menu.Target>
+        <Menu.Item>Advanced</Menu.Item>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item>Sub Action 1</Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+  </Menu.Dropdown>
+</Menu>
+```
+
+Use submenus cautiously to avoid complexity.
+
+## Advanced Usage Tips
+
+### Trigger Options
+
+- **Click (default)**: Most accessible option, works on all devices
+- **Hover**: Convenient but less accessible, use `openDelay` and `closeDelay` to control timing
+- **Click-Hover**: Best of both worlds - works with hover on desktop and click on mobile
+
+```tsx
+<Menu trigger="click-hover" openDelay={100} closeDelay={400}>
+  {/* Menu content */}
+</Menu>
+```
+
+### Custom Components as Target
+
+When using custom components as Menu.Target, ensure they properly forward refs:
+
+```tsx
+const CustomButton = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ children, ...props }, ref) => (
+    <button ref={ref} {...props}>
+      {children}
+    </button>
+  )
+);
+
+<Menu>
+  <Menu.Target>
+    <CustomButton>Custom target</CustomButton>
+  </Menu.Target>
+  {/* Menu content */}
+</Menu>
+```
+
+---
+
+This document provides a practical, concise guide for implementing Mantine Menus effectively, aligning with the Next.js-inspired best practices format.
+
+[Reference: Mantine Menu Documentation](https://mantine.dev/core/menu/?t=props)

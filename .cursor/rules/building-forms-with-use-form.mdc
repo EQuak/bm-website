@@ -1,0 +1,121 @@
+---
+description: When we need to create simple or complex form using useForm from mantine/hooks
+globs: 
+---
+## Memory Documentation: Using Mantine useForm
+
+### Overview
+
+- **Mantine useForm** is a powerful form management hook built on top of the ideas of React Hook Form but modified for better integration with Mantine UI components.  
+- **No Additional Controller Needed**: Since Mantine's useForm provides a `getInputProps` function to bind form state directly to components, you don't need to use a separate controller (like in React Hook Form).
+
+### Key Features
+
+1. **Tight Integration with Mantine Components**
+   - Use `getInputProps` to bind form field values, error states, and event handlers automatically to Mantine components.
+   - Pass the `key` returned by `form.key(fieldName)` to ensure correct behavior, only needed in uncontrolled mode.
+
+2. **Uncontrolled Mode for Improved Performance**
+   - In uncontrolled mode, form values are stored in refs, not state. This approach prevents unnecessary re-renders as values change.
+   - Refer to the [Uncontrolled Mode documentation](mdc:https:/mantine.dev/form/uncontrolled) for details.
+
+3. **Form Context for Complex or Multi-Step Forms**
+   - When dealing with complex forms or multi-step flows (e.g., when using contexts), you can either use Mantine's built-in form context or a custom context (as seen in our `TicketForm` component).
+   - Context integration keeps state management centralized and makes the form state available across different subcomponents.
+
+4. **Error Management and Validation**
+   - Centralized error handling is provided via validation functions (or schema validations).  
+   - Use `form.onSubmit(handleSubmit, handleSubmitErrors)` to handle both successful submissions and error cases.
+   - The uncontrolled mode ensures that error messages and touched/dirty statuses are updated only when necessary, improving performance.
+
+5. **Additional Helpers and States**
+   - **Form Status**: Methods such as `form.isDirty()`, `form.isTouched()`, and the `submitting` state provide quick access to form statuses. (See [Form Status docs](mdc:https:/mantine.dev/form/status/#submitting-state))
+   - **Dynamic Fields**: With dynamic field builders (e.g., our `DynamicFieldComponent`), the form handles multiple field types and even arrays by using functions like `insertListItem` and `removeListItem`.
+
+### Example: TicketForm Component
+
+Below is an excerpt from our `TicketForm` component that demonstrates how we initialize and manage the form:
+
+```tsx
+"use client"
+
+import { useEffect, useState } from "react"
+import {
+  Button,
+  DatePickerInput,
+  Divider,
+  Grid,
+  Loader,
+  notifications,
+  Select,
+  SimpleGrid,
+  Skeleton,
+  Stack,
+  TextInput
+} from "@repo/mantine-ui"
+import { IconCalendarDue, IconFlag2, IconPaperclip, IconSend } from "@repo/mantine-ui/icons/index"
+import { useTicketForm } from "./ticket-form.context"
+import { ticketFormInitialValues, ticketFormSchema } from "./ticket-form.type"
+import { TicketFormProvider } from "./ticket-form.context"
+import DescriptionInputTipTap from "./description-input"
+
+export function TicketForm({ reference }: { reference: string }) {
+  const [uploadModalOpened, setUploadModalOpened] = useState(false)
+  const form = useTicketForm({
+    validate: mtnZodResolver(ticketFormSchema),
+    enhanceGetInputProps: () => ({ disabled: isLoading })
+  })
+
+  // Initialize the form only once when required (Good for async initial data)
+  useEffect(() => {
+    if (!selectedDepartmentSlug || !requestType?.id || step !== 3) return
+    form.initialize({
+      ...ticketFormInitialValues,
+      reference,
+      departmentSlug: selectedDepartmentSlug,
+      requestTypeId: requestType.id,
+      createdBy: profile.id
+    })
+  }, [selectedDepartmentSlug, requestType, step, profile.id])
+
+  // Handle form submission:
+  const handleSubmit = async (data: TicketFormType) => { /* ... */ }
+  const handleSubmitErrors = (errors: typeof form.errors) => { /* ... */ }
+
+  return (
+    <TicketFormProvider form={form}>
+      <form onSubmit={form.onSubmit(handleSubmit, handleSubmitErrors)}>
+        <Stack>
+          <TextInput
+            withAsterisk
+            label="Subject"
+            {...form.getInputProps("subject")}
+            key={form.key("subject")}
+          />
+          {/* ... Additional fields using Mantine UI components ... */}
+          <Button
+            type="submit"
+            loading={isLoading}
+            disabled={isUploading}
+            rightSection={<IconSend />}
+          >
+            Submit
+          </Button>
+        </Stack>
+      </form>
+      {/* Attachment modal and other components */}
+    </TicketFormProvider>
+  )
+}
+```
+
+### References
+
+- [Mantine useForm](mdc:https:/mantine.dev/form/use-form)
+- [Uncontrolled Mode](mdc:https:/mantine.dev/form/uncontrolled)
+- [Form Values](mdc:https:/mantine.dev/form/values)
+- [Form Status](mdc:https:/mantine.dev/form/status/#submitting-state)
+
+---
+
+This documentation should serve as a good reference for understanding and extending our form implementation within the stack while highlighting the advantages of the Mantine useForm hook.

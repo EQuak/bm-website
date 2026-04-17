@@ -1,0 +1,163 @@
+---
+description: Best practices for implementing Mantine notifications in React/Next.js applications for effective user feedback
+alwaysApply: false
+---
+# Mantine Notifications Guidelines
+
+This documentation outlines best practices for using Mantine notifications in your application. It covers recommendations for simple notifications, dynamic updates, and accessibility considerations.
+
+## 1. Simple Notifications (notifications.show)
+
+Use notifications.show for one-off messages (such as success, error, or warning alerts) after user actions, ensuring immediate and clear feedback.
+
+### Example:
+
+```tsx
+import { notifications } from '@mantine/notifications';
+
+const handleSave = () => {
+  notifications.show({
+    title: 'Success',
+    message: 'Your changes have been saved.',
+    color: 'green',
+    autoClose: 2000,
+  });
+};
+```
+
+## 2. Dynamic Updates (notifications.update)
+
+For asynchronous processes, use notifications.update to change the state of a notification (for example, from loading to success or error) so that users are kept informed throughout the process.
+
+### Example:
+
+```tsx
+import { notifications } from '@mantine/notifications';
+
+const handleSubmit = async () => {
+  const id = 'submit-status';
+  notifications.show({
+    id,
+    title: 'Processing',
+    message: 'Your request is being handled...',
+    loading: true,
+    autoClose: false,
+    position: 'top-right',
+  });
+
+  try {
+    await submitData();
+    notifications.update({
+      id,
+      title: 'Success',
+      message: 'Request completed successfully!',
+      color: 'green',
+      autoClose: 3000,
+    });
+  } catch (error) {
+    notifications.update({
+      id,
+      title: 'Error',
+      message: 'Something went wrong.',
+      color: 'red',
+      autoClose: 5000,
+    });
+  }
+};
+```
+
+## 3. General Guidelines
+
+### 3.1 Titles and Messages
+- **Short Titles**: Use the title prop for a concise, descriptive message (e.g., "Error").
+- **Additional Context**: Reserve the message prop for supplementary details (e.g., "Invalid input in field X").
+
+### 3.2 Visual Customization
+- **Colors**: Use colors to represent the intent (green for success, red for errors, etc.).
+- **Icons and Styles**: Customize the appearance with the icon and styles props.
+
+#### Example:
+
+```tsx
+notifications.show({
+  title: 'Warning',
+  message: 'Low disk space.',
+  color: 'yellow',
+  icon: <IconAlertCircle />,
+  styles: (theme) => ({
+    root: { backgroundColor: theme.colors.yellow[1] },
+  }),
+});
+```
+
+### 3.3 AutoClose Configuration
+- **Minor Updates**: Use a short duration (e.g., 2000ms) for minor notifications.
+- **Critical Errors**: Set a longer duration (e.g., 5000ms) for critical errors to ensure users have time to read the message.
+- **Persistent Notifications**: Set autoClose={false} for notifications that require user action to dismiss.
+
+### 3.4 Managing Simultaneous Notifications
+- **Unique IDs**: Assign unique values to the id prop so that you can update existing notifications with notifications.update instead of stacking multiple alerts.
+
+#### Example:
+
+```tsx
+notifications.show({ id: 'unique-id', title: 'Loading...', message: 'Please wait.' });
+```
+
+### 3.5 Positioning
+- **Thoughtful Placement**: Position notifications to avoid obstructing key UI elements (such as forms or buttons). Test different positions like top-right, bottom-center, etc., to ensure visibility across devices.
+
+#### Example:
+
+```tsx
+notifications.show({
+  position: 'bottom-center',
+  // other props
+});
+```
+
+### 3.6 Manual Dismissal
+- **Hide Notifications**: Use notifications.hide to manually dismiss notifications when needed, such as after user interaction or when a condition is met.
+
+#### Example:
+
+```tsx
+const notificationId = notifications.show({ /* notification props */ });
+// Later, dismiss the notification:
+notifications.hide(notificationId);
+```
+
+### 3.7 Clearing Notifications
+- **Use Sparingly**: Use notifications.clean or notifications.cleanQueue only when necessary (for example, after a page reload or error recovery).
+
+#### Example:
+
+```tsx
+notifications.clean(); // Clears all notifications
+```
+
+### 3.8 Accessibility
+- **Aria-Live Regions**: Include attributes like aria-live="polite" to ensure that notifications are announced by screen readers.
+- **Role Alert**: Add role="alert" for critical notifications to enhance usability with assistive technologies.
+- **Testing**: Test with screen readers to ensure notifications are properly announced.
+
+#### Example:
+
+```tsx
+notifications.show({
+  title: 'Error',
+  message: 'Form submission failed.',
+  color: 'red',
+  role: 'alert',
+});
+```
+
+## Conclusion
+
+Following these guidelines will ensure that notifications in your application are:
+- **Clear and Concise**: With short titles and additional messages only when necessary.
+- **Visually Distinct**: Through appropriate use of colors, icons, and styles.
+- **Dynamic and Responsive**: Providing real-time updates during asynchronous processes.
+- **Accessible**: Optimized for assistive technologies, ensuring a better user experience for everyone.
+
+If you need more examples or wish to explore additional features, feel free to ask!

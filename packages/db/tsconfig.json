@@ -1,0 +1,9 @@
+{
+  "extends": "@repo/typescript-config/internal-package.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
+  },
+  "include": ["src", "drizzle.config.ts", "script/**/*"],
+  "exclude": ["node_modules", "src/seed/**/*", "script/**/*"]
+}

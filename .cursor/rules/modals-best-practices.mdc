@@ -1,0 +1,129 @@
+---
+description: Best practices for implementing modals, confirmation dialogs, and quick actions using Mantine modals
+alwaysApply: false
+---
+# Mantine Modals Best Practices
+
+## Setup
+
+- Always wrap your application with `ModalsProvider` in your root layout component
+- Define reusable context modals in the `ModalsProvider` for consistent UI patterns
+- Set default labels for confirmation buttons at the provider level for consistency
+
+## Confirmation Modals
+
+- Use `modals.openConfirmModal()` for all user confirmation actions (deletion, submission, etc.)
+- Include clear, concise descriptions explaining the consequences of the action
+- Use appropriate colors for confirmation buttons based on action risk (red for destructive actions)
+- Customize button labels based on the specific action ("Delete", "Confirm", "Proceed")
+- Center critical confirmation modals to draw user attention
+- Add additional UI elements (icons, warnings) for high-risk actions
+
+## Quick Action Modals
+
+- Use content modals with `modals.open()` for forms and complex interactions
+- Keep quick action modals focused on a single task
+- Use `data-autofocus` attribute on the primary input field for immediate keyboard interaction
+- Include proper form validation before closing the modal
+- Provide clear success/error feedback after modal actions
+
+## Multi-Step Modals
+
+- Implement multi-step workflows using the modal manager's layering capabilities
+- Keep the modal chain clean by closing previous modals when appropriate
+- Display progress indicators for multi-step processes
+- Allow users to navigate back to previous steps when possible
+
+## Dynamic Content
+
+- Use `modals.updateModal()` or `modals.updateContextModal()` for loading states and dynamic content
+- Disable close buttons during processing states
+- Provide clear visual indicators for loading/processing states
+
+## TypeSafety
+
+- Define proper TypeScript interfaces for all context modals
+- Use the `MantineModalsOverride` interface to ensure type safety
+- Properly type all modal props and callbacks
+
+## Accessibility
+
+- Ensure all modal content is accessible with proper ARIA attributes
+- Make all modal actions available via keyboard shortcuts
+- Provide escape key functionality for non-critical modals
+- Use appropriate focus management for form elements
+
+## Performance
+
+- Keep modal content lightweight and optimized
+- Lazy load complex components used in modals
+- Clean up side effects when modals close
+
+
+ - Use Mantine’s `openConfirmModal` for critical user actions requiring confirmation, such as deletions or irreversible changes, to ensure user intent is verified.  
+ - Leverage openModal for quick action modals when displaying lightweight forms or informational content that doesn’t disrupt the user flow.  
+ - Keep modal content concise and purposeful—avoid overloading confirmation modals with unnecessary details; focus on the action and its consequences.  
+ - Utilize Mantine’s modalProps (e.g., `title`, `centered`, `size`) to enhance usability—center modals for prominence and adjust size based on content complexity.  
+ - Implement proper state management with Mantine’s `closeOnConfirm` and `closeOnCancel` to maintain a seamless UX after user interaction.  
+ - Add loading states to confirmation modals (via `confirmProps`) for asynchronous operations, like API calls, to provide feedback during processing.  
+ - Avoid nesting modals; instead, use sequential modals or rethink the flow to maintain clarity and prevent user confusion.
+ - Explanation of Recommendations
+
+### Confirmation Modals `(openConfirmModal)`:
+
+Use these when the user needs to confirm an action with potential consequences (e.g., deleting a resource). For example:  
+
+```tsx
+import { openConfirmModal } from '@mantine/modals';
+
+const handleDelete = () => {
+  openConfirmModal({
+    title: 'Are you sure?',
+    children: 'This action will permanently delete the item.',
+    labels: { confirm: 'Delete', cancel: 'Cancel' },
+    confirmProps: { color: 'red' },
+    onConfirm: () => deleteItem(),
+  });
+};
+```
+
+This ensures users are prompted clearly and can’t accidentally proceed.
+
+### Quick Action Modals `(openModal)`:
+
+Ideal for tasks like quick edits or displaying contextual info. For instance:
+
+```tsx
+import { openModal } from '@mantine/modals';
+import { TextInput, Button } from '@mantine/core';
+
+const openQuickEdit = () => {
+  openModal({
+    title: 'Edit Name',
+    centered: true,
+    size: 'sm',
+    children: (
+      <>
+        <TextInput label="New Name" />
+        <Button fullWidth mt="md">Save</Button>
+      </>
+    ),
+  });
+};
+```
+
+Keeps the interaction lightweight and focused.
+
+ - Conciseness: Overloading a modal with text or options can overwhelm users. Stick to the essentials—action description and buttons.
+ - Modal Props: Centering modals (centered: true) and sizing appropriately (`size: 'sm'` or `'lg'`) improve readability and focus.
+ - State Management: Automatically closing modals after confirmation or cancellation enhances flow, avoiding manual cleanup.
+ - Loading States: For actions like saving or deleting, show a loading indicator:
+
+```tsx
+{
+  ...,
+  confirmProps: { loading: isLoading }
+}
+```
+
+ - Avoid Nesting: Multiple modals confuse users. If needed, chain actions sequentially instead.

@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "setup": "./conductor-init.sh",
+    "run": "pnpm dev"
+  }
+}

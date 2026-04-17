@@ -1,0 +1,201 @@
+---
+description: when need to build ui with components or tailwind classeshttps://mantine.dev/getting-started/https://mantine.dev/getting-started/
+globs: apps/**/*.tsx, packages/mantine-ui/**/*.tsx
+---
+## How to use Mantine Components with or without Tailwind
+
+This repo use Mantine UI ^7 version, what is a component based library, this facilitate the contract btw the dev team.
+
+But we added support to tailwind, adding to the tailwind config all mantine UI classes, using a prefix `mtn` like `p-mtn-md` so we can keep the UI uniform accross, divs or componets.
+
+### When use pure component?
+
+If the component has no need to extra ui modification or small modifications, use the plain component with ui pros.
+
+```tsx
+<Text fz="lg">
+  warehouse.
+</Text>
+```
+
+
+### When use mixed component?
+
+If we need to use pseudo or conditinal, we can use tailwind to facilitate, instead to need to create a `module.css` file.
+```tsx
+<Text fz="lg" className="hover:text-mtn-blue-5">
+  warehouse.
+</Text>
+```
+
+### When use divs and no component
+When you need to create a unique UI, that will be not reusable many times, you have freedom to be creative with tailwind classes.
+
+
+### Usage example
+```tsx
+      <Flex direction="row" h="100vh" justify="center" bg="white">
+        {/* Left side with background image */}
+        <Flex
+          direction="column"
+          justify="center"
+          p="xl"
+          display={{ base: "none", sm: "flex" }}
+          pos="relative"
+          style={{
+            flex: 1,
+            backgroundColor: "#f0f0f0",
+            overflow: "hidden"
+          }}
+        >
+          <Image
+            src={WAREHOUSE_ROBOTS}
+            alt="Warehouse robots"
+            fill
+            style={{
+              objectFit: "cover",
+              zIndex: 0
+            }}
+            priority
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.8)",
+              zIndex: 1
+            }}
+          />
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <Title c="white" size="40px">
+              Reinvent the{" "}
+              <Text span c="#78BE20" fz="40px" fw="700">
+                warehouse.
+              </Text>
+            </Title>
+            <Title c="white" size="40px">
+              Reimagine the{" "}
+              <Text span c="#78BE20" fz="40px" fw="700">
+                supply chain
+              </Text>
+            </Title>
+          </div>
+        </Flex>
+
+        {/* Right side with login form */}
+        <Flex
+          direction="column"
+          // justify="center"
+          mt="120px"
+          p="xl"
+          style={{
+            flex: 1,
+            maxWidth: "500px",
+            background: "white"
+          }}
+        >
+          <form
+            onSubmit={loginForm.onSubmit(handleLogin)}
+            autoComplete="new-password"
+          >
+            <Stack gap="xl">
+              <Flex
+                justify={{ base: "center", sm: "flex-start" }}
+                align={{ base: "center", sm: "flex-start" }}
+              >
+                <IconFullLogo width={244} />
+              </Flex>
+              <Flex
+                justify={{ base: "center", sm: "flex-start" }}
+                align={{ base: "center", sm: "flex-start" }}
+              >
+                <Title order={3} fz={"32px"} mb="lg">
+                  Welcome back
+                </Title>
+              </Flex>
+
+              <Stack gap="md">
+                <TextInput
+                  variant="filled"
+                  labelProps={{
+                    fz: "18px",
+                    fw: "700"
+                  }}
+                  data-testid="username-input"
+                  label="Login"
+                  placeholder="Username"
+                  {...loginForm.getInputProps("credential")}
+                  autoComplete="new-password"
+                  leftSection={<IconUser size={20} stroke={2.5} />}
+                />
+
+                <PasswordInput
+                  variant="filled"
+                  labelProps={{
+                    fz: "18px",
+                    fw: "700"
+                  }}
+                  data-testid="password-input"
+                  ref={passwordRef}
+                  label="Password"
+                  placeholder="Password"
+                  {...loginForm.getInputProps("password")}
+                  autoComplete="new-password"
+                  leftSection={<IconLock size={20} stroke={2.5} />}
+                />
+
+                <Button
+                  fullWidth
+                  variant="gradient"
+                  gradient={{ from: "#78BE20", to: "#008F38" }}
+                  data-testid="login-button"
+                  type="submit"
+                  loading={loading}
+                >
+                  SIGN IN
+                </Button>
+
+                <Center>
+                  <Anchor
+                    c="dimmed"
+                    fz="sm"
+                    component={Link}
+                    href="/forgot-password"
+                  >
+                    FORGOT YOUR PASSWORD?
+                  </Anchor>
+                </Center>
+
+                <Center>
+                  <Button
+                    variant="outline"
+                    color="gray"
+                    component={Link}
+                    href="/reset-password"
+                    styles={{
+                      root: {
+                        border: "double 1px transparent",
+                        borderRadius: "4px",
+                        backgroundImage:
+                          "linear-gradient(white, white), linear-gradient(to right, #78BE20, #008F38)",
+                        backgroundOrigin: "border-box",
+                        backgroundClip: "padding-box, border-box",
+                        "&:hover": {
+                          backgroundImage:
+                            "linear-gradient(rgba(120, 190, 32, 0.1), rgba(120, 190, 32, 0.1)), linear-gradient(to right, #78BE20, #008F38)"
+                        }
+                      }
+                    }}
+                  >
+                    RESET PASSWORD
+                  </Button>
+                </Center>
+              </Stack>
+            </Stack>
+          </form>
+        </Flex>
+      </Flex>
+      ```

@@ -1,0 +1,263 @@
+---
+description: when we need to create a trpc route endpoint
+globs: packages/api/src/router/*, **/*.router.ts
+---
+# API Endpoint Rules with tRPC and Drizzle ORM
+
+## Authentication and Authorization
+
+1. **Protected Routes**
+   - Use `protectedProcedure` for any routes that require authentication
+   - This ensures only logged-in users can access the endpoint
+   - Example:
+   ```typescript
+   export const protectedRoute = protectedProcedure
+     .input(schema)
+     .query(async ({ ctx, input }) => {
+       // Your logic here
+     });
+   ```
+   - Avaliable contexts:
+     - `ctx.db` is the drizzle client
+     - `ctx.user` is the auth logged user
+     - `ctx.supabase` is the supabase server client
+     - `ctx.supabaseAdmin` is the supabase server client with admin privileges
+
+2. **Public Routes**
+   - Use `publicProcedure` only for endpoints that should be accessible without authentication
+   - Example: login, registration, public data
+
+## Input Validation
+
+1. **Always Validate Input**
+   - Use Zod schemas for input validation
+   - Define schemas in a separate file for reusability
+   - Example from items.router.ts:
+   ```typescript
+   .input(
+     z.object({
+       search: z.string(),
+       limit: z.number().optional().default(10)
+     })
+   )
+   ```
+   - If it is possible, use the schema from the `*.table.ts`
+   file: [feature].table.ts 
+   ```ts
+    export const profilesSchema: {
+      insert: typeof profilesInsertSchema
+      select: typeof profilesSelectSchema
+      update: typeof profilesUpdateSchema
+    } = {
+      insert: profilesInsertSchema,
+      select: profilesSelectSchema,
+      update: profilesUpdateSchema
+    }
+   ```
+   file: [feature].route.ts
+  ```ts
+   .input(
+     profilesSchema.insert.pick({anyfield: true})
+   )
+   ```
+
+## Database Operations
+
+1. **Using Drizzle ORM**
+   - Access database through `ctx.db`
+   - Use Drizzle's type-safe query builder
+   - Leverage transactions for atomic operations
+   - Example from items.router.ts:
+   ```typescript
+   const items = await ctx.db.query.ItemsTable.findMany({
+     where: (items, { ilike, and }) =>
+       and(
+         ilike(items.part_number, `%${search}%`),
+         ilike(items.description, `%${search}%`),
+         ilike(items.category, `%${search}%`)
+       ),
+     limit: input.limit
+   })
+   ```
+   - If is a complex query, should use `ctx.db.select(Table).joins...`
+
+2. **Performance Optimization**
+   - Use `Promise.all` for parallel independent operations
+   - Example:
+   ```typescript
+   const [users, posts] = await Promise.all([
+     ctx.db.select().from(usersTable),
+     ctx.db.select().from(postsTable)
+   ]);
+   ```
+
+3. **Transactions**
+   - Use transactions when multiple operations need to be atomic
+   - Example:
+   ```typescript
+   await ctx.db.transaction(async (tx) => {
+     await tx.insert(table1).values(data1);
+     await tx.insert(table2).values(data2);
+   });
+   ```
+
+## Query vs Mutation
+
+1. **Queries**
+   - Use for reading data
+   - Should be idempotent
+   - Can be cached
+   - Example from items.router.ts:
+   ```typescript
+   export const inventoryItemsRouter = createTRPCRouter({
+     searchItems: protectedProcedure
+       .input(
+         z.object({
+           search: z.string(),
+           limit: z.number().optional().default(10)
+         })
+       )
+       .query(async ({ ctx, input }) => {
+         const { search } = input
+
+         // Validation logic
+         if (search.length < 3) {
+           return {
+             data: [],
+             error: null
+           }
+         }
+
+         try {
+           const items = await ctx.db.query.ItemsTable.findMany({
+             where: (items, { ilike, and }) =>
+               and(
+                 ilike(items.part_number, `%${search}%`),
+                 ilike(items.description, `%${search}%`),
+                 ilike(items.category, `%${search}%`)
+               ),
+             limit: input.limit
+           })
+
+           return {
+             data: items,
+             error: null
+           }
+         } catch (error) {
+           console.error(error)
+           return {
+             data: [],
+             error: error
+           }
+         }
+       })
+   })
+   ```
+
+2. **Mutations**
+   - Use for modifying data
+   - Should handle side effects
+   - Example:
+   ```typescript
+   export const updateUser = protectedProcedure
+     .input(updateUserSchema)
+     .mutation(async ({ ctx, input }) => {
+       return ctx.db.update(usersTable)
+         .set(input.data)
+         .where(eq(usersTable.id, input.id));
+     });
+   ```
+
+## Error Handling
+
+1. **Use tRPC Error Types and Consistent Response Format**
+   - Throw appropriate tRPC errors
+   - Include meaningful error messages
+   - Use consistent response format
+   - Example from items.router.ts:
+   ```typescript
+   try {
+     const items = await ctx.db.query.ItemsTable.findMany({
+       // query logic
+     })
+
+     return {
+       data: items,
+       error: null
+     }
+   } catch (error) {
+     console.error(error)
+     return {
+       data: [],
+       error: error
+     }
+   }
+   ```
+
+## Context Usage
+
+1. **Supabase Client**
+   - Use `ctx.supabase` for auth-related operations
+   - Example:
+   ```typescript
+   const { data: authData } = await ctx.supabase.auth.getUser();
+   ```
+
+2. **Database Access**
+   - Use `ctx.db` for database operations
+   - Leverage Drizzle's type safety
+   - Example from items.router.ts:
+   ```typescript
+   const items = await ctx.db.query.ItemsTable.findMany({
+     where: (items, { ilike, and }) =>
+       and(
+         ilike(items.part_number, `%${search}%`),
+         ilike(items.description, `%${search}%`),
+         ilike(items.category, `%${search}%`)
+       ),
+     limit: input.limit
+   })
+   ```
+
+## Best Practices
+
+1. **Code Organization**
+   - Group related endpoints in router files (e.g., `items.router.ts` for inventory items)
+   - Use descriptive names for procedures
+   - Keep business logic separate from route definitions
+   - Example from items.router.ts:
+   ```typescript
+   export const inventoryItemsRouter = createTRPCRouter({
+     searchItems: protectedProcedure
+     // ... implementation
+   })
+   ```
+
+2. **Input Validation**
+   - Validate business rules before database operations
+   - Example from items.router.ts:
+   ```typescript
+   // If the search is less than 3 characters, return an empty array
+   if (search.length < 3) {
+     return {
+       data: [],
+       error: null
+     }
+   }
+   ```
+
+3. **Performance Considerations**
+   - Use appropriate indexes for queries
+   - Minimize database roundtrips
+   - Use batch operations when possible
+   - Consider implementing caching for frequently accessed data
+   - Example from items.router.ts:
+   ```typescript
+   // Using compound search with AND condition for better performance
+   where: (items, { ilike, and }) =>
+     and(
+       ilike(items.part_number, `%${search}%`),
+       ilike(items.description, `%${search}%`),
+       ilike(items.category, `%${search}%`)
+     )
+   ```

@@ -1,0 +1,17 @@
+# Load NVM environment
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+echo "Running pre-commit hook"
+
+# # Run format:fix and lint:fix, but continue even if they fail
+# pnpm format:fix || true
+# pnpm lint:fix || true
+
+# # Stage the changes
+# git add .
+
+# # Exit successfully
+# exit 0
+
+pnpm lint-staged

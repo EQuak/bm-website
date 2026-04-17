@@ -1,0 +1,5 @@
+{
+  "*.{ts,tsx}": ["pnpm format-and-lint:check"],
+  "*.{js,jsx,cjs,mjs}": ["pnpm format-and-lint:check"],
+  "*.{json,md,mdx,yml,yaml}": []
+}

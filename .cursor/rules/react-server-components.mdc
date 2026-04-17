@@ -1,0 +1,94 @@
+---
+description: rules when we will use server components on this projects
+globs: *.tsx
+---
+# Rules for Server Components in Next.js
+
+## 1. When to Use Server vs Client Components
+- Use **Client Components** when you need:
+  - Interactivity and event listeners (`onClick`, `onChange`, etc.)
+  - React hooks (`useState`, `useEffect`, etc.)
+  - Browser APIs
+  - Component state and lifecycle methods
+- Use **Server Components** when:
+  - The component doesn't need reactivity
+  - You're primarily doing data fetching
+  - You want to keep sensitive data or logic on the server
+  - You want to reduce client-side JavaScript bundle
+
+**Priority Rule**: Route pages (`page.tsx`) should primarily be Server Components because:
+- They usually require initial data fetching
+- Server-side rendering improves performance
+- Reduces client-server round trips
+- Better for SEO and initial page load
+
+## 1. Identifying Server Components
+- Server Components **must not** contain `"use client"` at the top of the file.
+- If `"use server"` is present, it means it is a server function and not a React Component. In this case, the file should have the `.ts` extension, not `.tsx`.
+
+## 2. Server Page Structure
+- If it is a route page (`page.tsx`), the main function must be exported as **default**.
+- Server Components can access dynamic route parameters (`params`), which always arrive as a **Promise** and must be awaited (`await`).
+- Since Server Components are asynchronous, `await` can be used directly within the component body.
+
+## 3. Fetching Data with tRPC
+- Prefetching data should be done on the **server** whenever possible.
+- If the route requires specific calls, these calls should be made within the Server Component before rendering.
+- The fetched data should be **hydrated** for the client using `<HydrateClient>`.
+- This prevents the client from making new requests when loading the page, improving user experience.
+
+## 4. Organization and Logic Separation
+- Server Components should contain **minimal UI logic**.
+- The primary role of a Server Component is:
+  - Fetching data.
+  - Checking permissions and access control (e.g., verifying if a user can view or edit a resource).
+  - Passing necessary data to Client Components.
+- All UI logic should be delegated to **Client Components**.
+
+## 5. Hydration and Props
+- If data has already been hydrated on the server, **it does not need to be passed as props** to the Client Component.
+- If data depends on additional logic, search parameters, or client-managed states, **it can be passed via props**.
+
+## 6. Middleware Usage and Authorization
+- The authentication middleware can be used for general page access.
+- For specific checks (e.g., verifying if a user is the author of a post), these validations can be done directly in the Server Component before loading the data.
+
+## 7. Layout Pattern
+- The Server Component should define the **general structure** of the page, including sizes, `flex`, `dynamic`, etc.
+- Detailed visual composition should be handled inside Client Components.
+
+## Example of Correct Implementation
+```tsx
+import { api, HydrateClient } from "#/trpc/server";
+import ItemForm from "./_components/form/ItemForm";
+import ItemsList from "./_components/list/ItemsList";
+
+export default async function ItemsPage({
+  params
+}: {
+  params: Promise<{ mode: ["create" | "edit" | "view" | "list", ...string[]] }>
+}) {
+  const mode = (await params).mode[0];
+  const sku = (await params).mode[1]!;
+
+  if (mode === "list") {
+    void (await api.inventory.items.getItems.prefetch());
+    void (await api.inventory.items.getItemsWithSearchAndFilters.prefetch({}));
+    return (
+      <HydrateClient>
+        <ItemsList />
+      </HydrateClient>
+    );
+  }
+
+  void (await api.inventory.items.getItemBySku.prefetch({ sku }));
+  return (
+    <HydrateClient>
+      <ItemForm mode={mode} sku={sku} />
+    </HydrateClient>
+  );
+}
+```
+
+This approach ensures a good separation between server logic and UI, improves performance, and keeps the code well-organized.
+

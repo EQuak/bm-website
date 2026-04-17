@@ -1,0 +1,427 @@
+---
+description: best pratices when are creating, editing manipulating tables with drizzle orm and drizzle kit
+globs: *.table.ts, *.enum.ts
+---
+# Database patterns with Drizzle ORM
+
+## Table of Contents
+
+1. [Basic Structure](mdc:#basic-structure)
+2. [Table Definitions](mdc:#table-definitions)
+3. [Relations](mdc:#relations)
+4. [Schema Validation](mdc:#schema-validation)
+5. [Indices and Performance](mdc:#indices-and-performance)
+6. [Best Practices](mdc:#best-practices)
+
+## Basic Structure
+
+Every database table file should follow this structure:
+
+```typescript
+import { relations } from "drizzle-orm";
+import { pgTable, timestamp } from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { v7 as uuidv7 } from "uuid";
+import { z } from "zod";
+import { timestamps } from "@repo/db/utils";
+
+// 1. Table Definition
+export const ExampleTable = pgTable("example", db => ({
+  id: db.uuid("id").primaryKey().$defaultFn(() => uuidv7()),
+  first_name: db.text("first_name").notNull(),
+  ...timestamps,
+}));
+
+// 2. Relations (Note: prefix with underscore)
+export const _ExampleTableRelations = relations(ExampleTable, ({ one, many }) => ({
+  _posts: many(PostTable),
+  _profile: one(ProfileTable),
+}));
+
+// 3. Schemas with Refinements
+const refinements = {
+  first_name: (schema: z.ZodString) => schema.min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email format"), // Complete override
+};
+
+export const ExampleTableSchemas = {
+  insert: createInsertSchema(ExampleTable, refinements),
+  select: createSelectSchema(ExampleTable, refinements),
+  update: createInsertSchema(ExampleTable, refinements),
+};
+
+// 4. Types
+export type Example = typeof ExampleTable.$inferSelect;
+export type NewExample = typeof ExampleTable.$inferInsert;
+```
+
+## Table Definitions
+
+### Naming Conventions
+
+1. **Table Names**
+   - Use PascalCase for table definitions
+   - Add 'Table' suffix
+   - Use domain prefixes for organization
+
+```typescript
+export const InventoryItemsTable = pgTable("inventory_items", {});
+export const InventoryLocationsTable = pgTable("inventory_locations", {});
+```
+
+2. **Column Names**
+   - Use snake_case for both database and table columns
+   - Be descriptive and clear
+   - This helps identify database-originated fields in frontend code
+
+```typescript
+{
+  first_name: db.text("first_name").notNull(),
+  last_login_at: db.timestamp("last_login_at"),
+  is_active: db.boolean("is_active").default(true),
+}
+```
+
+### Standard Columns
+
+Every table should import timestamps from utils:
+
+```typescript
+import { timestamps } from "@repo/db/utils";
+
+export const ExampleTable = pgTable("example", db => ({
+  id: db.uuid("id").primaryKey().$defaultFn(() => uuidv7()),
+  ...timestamps,
+  // Add other columns specific to the table
+}));
+```
+
+### Column Types
+
+Use appropriate Drizzle types with snake_case:
+
+```typescript
+{
+  // Text fields
+  full_name: db.text("full_name"),
+  description: db.text("description"),
+  
+  // Numbers
+  item_quantity: db.integer("item_quantity"),
+  unit_price: db.decimal("unit_price", { precision: 10, scale: 2 }),
+  
+  // Dates
+  start_date: db.timestamp("start_date"),
+  
+  // Booleans
+  is_active: db.boolean("is_active"),
+  
+  // Foreign Keys
+  user_id: db.uuid("user_id").references(() => UserTable.id),
+  
+  // Enums
+  status: db.text("status").$type<TicketStatus>().default("DRAFT"),
+}
+```
+
+## Relations
+
+### Important: All relations must be prefixed with underscore (_)
+
+### One-to-Many Relations
+
+```typescript
+export const _UserTableRelations = relations(UserTable, ({ many }) => ({
+  _posts: many(PostTable, {
+    fields: [UserTable.id],
+    references: [PostTable.user_id],
+  }),
+}));
+```
+
+### One-to-One Relations
+
+```typescript
+export const _UserTableRelations = relations(UserTable, ({ one }) => ({
+  _profile: one(ProfileTable, {
+    fields: [UserTable.id],
+    references: [ProfileTable.user_id],
+  }),
+}));
+```
+
+### Many-to-Many Relations
+
+```typescript
+// Junction table
+export const UserRolesTable = pgTable("user_roles", db => ({
+  user_id: db.uuid("user_id").references(() => UserTable.id),
+  role_id: db.uuid("role_id").references(() => RoleTable.id),
+}));
+
+// Relations
+export const _UserTableRelations = relations(UserTable, ({ many }) => ({
+  _roles: many(RoleTable, {
+    through: UserRolesTable,
+    fields: [UserTable.id],
+    references: [RoleTable.id],
+  }),
+}));
+```
+
+## Schema Validation
+
+### Schema Setup with Refinements
+
+```typescript
+// Custom validation rules with refinements
+const refinements = {
+  // Extend existing schema
+  first_name: (schema: z.ZodString) => 
+    schema.min(2, "Name must be at least 2 characters"),
+  
+  // Complete override
+  email: z.string().email("Invalid email format"),
+  
+  // Complex validation
+  preferences: z.object({ 
+    theme: z.string(),
+    notifications: z.boolean() 
+  })
+};
+
+// Create schemas
+export const UserTableSchemas = {
+  insert: createInsertSchema(UserTable, refinements),
+  select: createSelectSchema(UserTable, refinements),
+  update: createUpdateSchema(UserTable, refinements),
+};
+```
+
+### Enum Handling
+
+```typescript
+// Define enum
+export const USER_STATUS = {
+  ACTIVE: { value: "ACTIVE", label: "Active" },
+  INACTIVE: { value: "INACTIVE", label: "Inactive" },
+} as const;
+
+// Create enum array
+export const userStatusArray = Object.values(USER_STATUS).map(
+  status => status.value
+) as [string, ...string[]];
+
+// Create PostgreSQL enum
+export const userStatusEnum = pgEnum("user_status", userStatusArray);
+
+// Zod schema with refinements
+const statusRefinements = {
+  status: (schema: z.ZodEnum<[string, ...string[]]>) =>
+    schema.default(USER_STATUS.ACTIVE.value)
+};
+```
+
+## Full Example (Real World)
+```tsx
+import { relations } from "drizzle-orm"
+import { pgEnum, pgTable, primaryKey } from "drizzle-orm/pg-core"
+import {
+  createInsertSchema,
+  createSelectSchema,
+  createUpdateSchema
+} from "drizzle-zod"
+import type { z } from "zod"
+import { timestamps } from "../../lib/utils"
+import { ProfilesTable } from "../profiles.table"
+import { ItemsTxsTable } from "./items-txs.table"
+import { ItemsTable } from "./items.table"
+
+/**
+ * Request Item Report
+ * Description: This table is used to store the request item report data. This action is done by vendor to request items from the warehouse.
+ */
+export const REQUEST_ITEM_REPORT_STATUS = [
+  "open",
+  "in_progress",
+  "cancelled",
+  "completed"
+] as const
+export type RequestItemReportStatus =
+  (typeof REQUEST_ITEM_REPORT_STATUS)[number]
+
+export const RequestItemReportStatusEnum = pgEnum(
+  "request_item_report_status",
+  REQUEST_ITEM_REPORT_STATUS
+)
+export const RequestItemRptTable = pgTable("request_item_rpt", (t) => ({
+  id: t.uuid("id").primaryKey().defaultRandom(),
+  requester_id: t.uuid("requester_id").references(() => ProfilesTable.id),
+  request_date: t.timestamp("request_date", {
+    mode: "date",
+    withTimezone: true
+  }),
+  reason: t.text("reason").default(""),
+  status: RequestItemReportStatusEnum("status").default("open"),
+  ...timestamps
+}))
+
+// Relationships
+export const RequestItemRptRelations = relations(
+  RequestItemRptTable,
+  ({ many }) => ({
+    _requested_items: many(RequestItemRptReqItemsTable),
+    _transactions: many(RequestItemRptTxsTable)
+  })
+)
+
+// Schemas & Types
+export const requestItemReportInsertSchema =
+  createInsertSchema(RequestItemRptTable)
+export const requestItemReportSelectSchema =
+  createSelectSchema(RequestItemRptTable)
+export const requestItemReportUpdateSchema =
+  createUpdateSchema(RequestItemRptTable)
+
+export type RequestItemReportInsertType = z.infer<
+  typeof requestItemReportInsertSchema
+>
+export type RequestItemReportSelectType = z.infer<
+  typeof requestItemReportSelectSchema
+>
+export type RequestItemReportUpdateType = z.infer<
+  typeof requestItemReportUpdateSchema
+>
+
+/**
+ * Request Item Report Requested Items
+ * Description: This table is used to store the requested items from the request item report.
+ */
+export const REQUEST_ITEM_STATUS = [
+  "pending",
+  "approved",
+  "rejected",
+  "partial",
+  "completed"
+] as const
+export type RequestItemStatus = (typeof REQUEST_ITEM_STATUS)[number]
+
+export const RequestItemRptReqItemsTable = pgTable(
+  "request_item_rpt_req_items",
+  (t) => ({
+    id: t.uuid("id").primaryKey().defaultRandom(),
+    request_item_rpt_id: t
+      .uuid("request_item_rpt_id")
+      .references(() => RequestItemRptTable.id),
+    item_part_number: t
+      .text("item_part_number")
+      .references(() => ItemsTable.part_number),
+    quantity: t.integer("quantity").notNull(),
+    status: t.text("status").notNull().$type<RequestItemStatus>(),
+    ...timestamps
+  })
+)
+
+// Relationships
+export const RequestItemRptReqItemsRelations = relations(
+  RequestItemRptReqItemsTable,
+  ({ one }) => ({
+    _request_item_rpt: one(RequestItemRptTable, {
+      fields: [RequestItemRptReqItemsTable.request_item_rpt_id],
+      references: [RequestItemRptTable.id]
+    }),
+    _item: one(ItemsTable, {
+      fields: [RequestItemRptReqItemsTable.item_part_number],
+      references: [ItemsTable.part_number]
+    })
+  })
+)
+
+// Schemas & Types
+export const requestItemRptReqItemsInsertSchema = createInsertSchema(
+  RequestItemRptReqItemsTable
+)
+export const requestItemRptReqItemsSelectSchema = createSelectSchema(
+  RequestItemRptReqItemsTable
+)
+export const requestItemRptReqItemsUpdateSchema = createUpdateSchema(
+  RequestItemRptReqItemsTable
+)
+
+export type RequestItemRptReqItemsInsertType = z.infer<
+  typeof requestItemRptReqItemsInsertSchema
+>
+export type RequestItemRptReqItemsSelectType = z.infer<
+  typeof requestItemRptReqItemsSelectSchema
+>
+export type RequestItemRptReqItemsUpdateType = z.infer<
+  typeof requestItemRptReqItemsUpdateSchema
+>
+/**
+ * Request Item Report Transactions
+ * Description: This table is used to store the txs generated from the request item report.
+ */
+export const RequestItemRptTxsTable = pgTable(
+  "request_item_rpt_txs",
+  (t) => ({
+    request_item_rpt_id: t
+      .uuid("request_item_rpt_id")
+      .references(() => RequestItemRptTable.id),
+    tx_id: t.uuid("tx_id").references(() => ItemsTxsTable.id),
+    ...timestamps
+  }),
+  (t) => [
+    primaryKey({
+      columns: [t.request_item_rpt_id, t.tx_id]
+    })
+  ]
+)
+
+// Relationships
+export const RequestItemRptTxsRelations = relations(
+  RequestItemRptTxsTable,
+  ({ one }) => ({
+    _request_item_report: one(RequestItemRptTable, {
+      fields: [RequestItemRptTxsTable.request_item_rpt_id],
+      references: [RequestItemRptTable.id]
+    }),
+    _tx: one(ItemsTxsTable, {
+      fields: [RequestItemRptTxsTable.tx_id],
+      references: [ItemsTxsTable.id]
+    })
+  })
+)
+
+// Types
+export type RequestItemRptTxsType = typeof RequestItemRptTxsTable.$inferSelect
+
+export type RequestItemRptTxsInsertType =
+  typeof RequestItemRptTxsTable.$inferInsert
+```
+
+## Best Practices
+
+1. **Naming Conventions**
+   - Use snake_case for all database-related fields
+   - Prefix all relations with underscore (_)
+   - Keep consistent naming between database and code
+
+2. **Schema Validation**
+   - Use refinements for extending or overriding schemas
+   - Provide clear validation messages
+   - Consider both extension and complete override cases
+
+3. **Timestamps**
+   - Always import timestamps from utils
+   - Don't create custom timestamp fields unless necessary
+
+4. **Relations**
+   - Always prefix relation names with underscore (_)
+   - Use clear and descriptive relation names
+   - Document complex relations
+
+5. **Type Safety**
+   - Leverage Zod refinements for precise validation
+   - Use proper TypeScript types
+   - Export types for frontend use
+```

@@ -1,0 +1,58 @@
+{
+  "name": "@repo/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "funcs": "./src/funcs/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./funcs": {
+      "types": "./dist/funcs.d.ts",
+      "default": "./src/funcs/index.ts"
+    }
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf .turbo node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "test": "bun test",
+    "test:conversion": "bun src/funcs/hr/conversion-logic/__tests__/conversion.test.ts"
+  },
+  "dependencies": {
+    "@react-pdf/renderer": "^4.2.2",
+    "@repo/db": "workspace:*",
+    "@repo/shared": "workspace:*",
+    "@supabase/ssr": "catalog:",
+    "@supabase/supabase-js": "catalog:",
+    "@t3-oss/env-core": "^0.11.0",
+    "@trigger.dev/sdk": "4.0.4",
+    "@trpc/server": "catalog:trpc",
+    "bcryptjs": "^2.4.3",
+    "csv-parse": "^6.1.0",
+    "csv-stringify": "^6.6.0",
+    "dayjs": "catalog:",
+    "exceljs": "^4.4.0",
+    "nanoid": "^5.0.7",
+    "next": "catalog:next15",
+    "react": "catalog:react19",
+    "resend": "catalog:",
+    "superjson": "catalog:",
+    "uuid": "^10.0.0",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20.14.10",
+    "@types/react": "catalog:react19",
+    "@types/uuid": "^10.0.0",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:"
+  }
+}

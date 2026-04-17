@@ -1,0 +1,77 @@
+{
+  "folders": [
+    {
+      "name": "REPO",
+      "path": ".."
+    },
+    {
+      "name": "NEXTJS-APP",
+      "path": "../apps/web"
+    },
+    {
+      "name": "DB-PACKAGE",
+      "path": "../packages/db"
+    },
+    {
+      "name": "API-PACKAGE",
+      "path": "../packages/api"
+    }
+  ],
+  "settings": {
+    "editor.accessibilitySupport": "off",
+  "biome.lsp.bin": "./node_modules/@biomejs/cli-linux-x64/bin",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+    "typescript.validate.enable": true,
+    "tailwindCSS.experimental.classRegex": [
+      "cn`([^`]*)`",
+      "cn\\(([^)]*)\\)",
+      "classnames\\(([^)]*)\\)",
+      "cva\\(([^)]*)\\)",
+      "cx\\(([^)]*)\\)",
+      "clsx\\(([^)]*)\\)"
+    ],
+    "typescript.tsdk": "REPO/node_modules/typescript/lib",
+    "editor.defaultFormatter": "biomejs.biome",
+    "[typescript]": {
+      "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[javascriptreact]": {
+      "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+      "editor.defaultFormatter": "biomejs.biome"
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "formulahendry.auto-close-tag",
+      "formulahendry.auto-complete-tag",
+      "steoates.autoimport",
+      "nucllear.vscode-extension-auto-import",
+      "formulahendry.auto-rename-tag",
+      "fractalbrew.backticks",
+      "aaron-bond.better-comments",
+      "tamasfe.even-better-toml",
+      "knisterpeter.vscode-github",
+      "github.vscode-pull-request-github",
+      "christian-kohler.npm-intellisense",
+      "yoavbls.pretty-ts-errors",
+      "bradlc.vscode-tailwindcss",
+      "biomejs.biome",
+      "kricsleo.vscode-package-json-inspector"
+    ]
+  }
+}

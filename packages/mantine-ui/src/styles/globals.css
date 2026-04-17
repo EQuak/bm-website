@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mantine Dark */
+:root[data-mantine-color-scheme="dark"] {
+  --app-shell-background-color: color-mix(
+    in srgb,
+    var(--mantine-color-body),
+    black 15%
+  );
+}
+:root {
+  --app-shell-background-color: color-mix(
+    in srgb,
+    var(--mantine-color-body),
+    black 3%
+  );
+}

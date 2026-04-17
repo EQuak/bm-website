@@ -2,33 +2,42 @@ import "#/styles/globals.css"
 
 import { Analytics } from "@vercel/analytics/next"
 import type { Metadata, Viewport } from "next"
-import { headers } from "next/headers"
-import { cloakSSROnlySecret } from "ssr-only-secrets"
+
+import { DevReactGrabRoot } from "#/components/dev/DevReactGrabRoot"
+import { siteConfig } from "#/core/config/site"
 import { ThemeProvider } from "#/providers/theme-provider"
 import { TRPCReactProvider } from "#/trpc/react"
 
+const metadataBase = siteConfig.url?.startsWith("http")
+  ? new URL(siteConfig.url)
+  : new URL("http://localhost:3000")
+
 export const metadata: Metadata = {
-  title: "App Template",
-  description: "App Template"
+  metadataBase,
+  title: {
+    default: siteConfig.name,
+    template: `%s · ${siteConfig.name}`
+  },
+  description: siteConfig.description,
+  openGraph: {
+    title: siteConfig.name,
+    description: siteConfig.tagline,
+    siteName: siteConfig.name
+  }
 }
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false
+  maximumScale: 5,
+  userScalable: true
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const cookie = new Headers(await headers()).get("cookie")
-  const encryptedCookie = await cloakSSROnlySecret(
-    cookie ?? "",
-    "SECRET_CLIENT_COOKIE_VAR"
-  )
   return (
     <html
       lang="en"
@@ -43,9 +52,10 @@ export default async function RootLayout({
         suppressContentEditableWarning
         suppressHydrationWarning
       >
-        <TRPCReactProvider ssrOnlySecret={encryptedCookie}>
+        <TRPCReactProvider>
           <ThemeProvider>{children}</ThemeProvider>
         </TRPCReactProvider>
+        <DevReactGrabRoot />
         {process.env.NODE_ENV === "production" && process.env.VERCEL ? (
           <Analytics />
         ) : null}

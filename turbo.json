@@ -33,18 +33,13 @@
     }
   },
   "globalDependencies": ["**/.env"],
-  "globalEnv": ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY"],
+  "globalEnv": ["NEXT_PUBLIC_APP_URL"],
   "globalPassThroughEnv": [
     "NODE_ENV",
     "CI",
     "VERCEL",
     "VERCEL_ENV",
     "VERCEL_URL",
-    "npm_lifecycle_event",
-    "POSTGRES_URL",
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "SUPABASE_URL",
-    "RESEND_API_KEY",
-    "SECRET_CLIENT_COOKIE_VAR"
+    "npm_lifecycle_event"
   ]
 }

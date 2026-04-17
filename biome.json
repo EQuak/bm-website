@@ -33,11 +33,7 @@
       "!**/supabase",
       "!**/migrations",
       "!**/src/seed",
-      "!**/mantine-ui/src/styles.css",
-      "!**/packages/db/src/seed/data/*",
-      "!**/packages/db/src/seed/funcs/mar/mar-data-seed.ts",
-      "!**/packages/db/src/supabase.types.ts",
-      "!**/packages/db/script/employee-migration/import-employee.ts"
+      "!**/mantine-ui/src/styles.css"
     ]
   },
   "formatter": {

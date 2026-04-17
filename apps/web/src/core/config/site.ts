@@ -1,126 +1,25 @@
-import {
-  IconAdjustments,
-  IconBuilding,
-  IconCode,
-  IconHome,
-  IconSettings,
-  IconShield,
-  IconUsers
-} from "@repo/mantine-ui/icons"
-import type { NavItems } from "#/types"
-
-export type SiteConfig = {
-  name: string
-  description: string
-  url: string
-  ogImage: string
-  mainNav: NavItems[]
-  betaNav?: NavItems[]
-}
-
-export const siteConfig: SiteConfig = {
-  name: "App Template",
-  description: "",
-  url: "",
+export const siteConfig = {
+  /** Primary name in the header, footer, and metadata */
+  name: "BMiller Consulting",
+  /** Short line under the name in the header (desktop) */
+  headline: "Independent consultant",
+  tagline:
+    "I help leaders cut through complexity, align teams, and ship outcomes that last.",
+  description:
+    "Independent consultant partnering with executives and operators who need sharp thinking, honest facilitation, and practical plans they can run without a big firm on retainer.",
+  url: process.env.NEXT_PUBLIC_APP_URL ?? "https://bmillerconsulting.com",
   ogImage: "",
-  mainNav: [
-    {
-      label: "Dashboard",
-      href: "/dashboard",
-      icon: IconHome,
-      permissions: []
-    },
-    {
-      label: "Users",
-      href: "/users/list",
-      icon: IconUsers,
-      permissions: [
-        {
-          permission: "users",
-          actions: ["view"]
-        }
-      ]
-    },
-    {
-      label: "Platform",
-      href: "/platform",
-      icon: IconShield,
-      permissions: [],
-      platformStaffOnly: true,
-      links: [
-        {
-          label: "Overview",
-          href: "/platform",
-          permissions: []
-        },
-        {
-          label: "Organizations",
-          href: "/platform/organizations",
-          icon: IconBuilding,
-          permissions: []
-        },
-        {
-          label: "All users",
-          href: "/platform/users",
-          icon: IconUsers,
-          permissions: []
-        },
-        {
-          label: "Developer tools",
-          href: "/platform/developer-tools",
-          icon: IconCode,
-          permissions: []
-        },
-        {
-          label: "App configuration",
-          href: "/platform/app-config",
-          icon: IconAdjustments,
-          permissions: []
-        }
-      ]
-    },
-    {
-      label: "Settings",
-      href: "/settings",
-      icon: IconSettings,
-      permissions: [
-        {
-          permission: "settings",
-          actions: ["view"]
-        }
-      ],
-      links: [
-        {
-          label: "Profile",
-          href: "/profile/view",
-          permissions: []
-        },
-        {
-          label: "User Roles",
-          href: "/user-roles/list",
-          permissions: [
-            {
-              permission: "settings-user-roles",
-              actions: ["view"]
-            }
-          ]
-        },
-
-        {
-          label: "General Settings",
-          href: "/general-settings/list",
-          permissions: []
-        }
-      ]
-    }
-  ]
+  email: "hello@bmillerconsulting.com",
+  phone: "+1 (415) 555-0142",
+  /** Shown on Contact and in the footer */
+  address: {
+    line1: "Remote & on-site",
+    line2: "",
+    city: "San Francisco Bay Area",
+    region: "CA",
+    postal: ""
+  },
+  social: {
+    linkedin: "https://www.linkedin.com/in/bmillerconsulting"
+  }
 } as const
-
-export const betaNav = siteConfig.betaNav?.map((link) => ({
-  ...link,
-  href: `/beta_${link.href}`,
-  links: link.links?.map((subLink) => ({
-    ...subLink,
-    href: `/beta_${subLink.href}`
-  }))
-}))

@@ -5,17 +5,11 @@ const config: NextConfig = {
   compress: true,
 
   /** Enables hot reloading for local packages without a build step */
-  transpilePackages: [
-    "@repo/tailwind",
-    "@repo/mantine-ui",
-    "@repo/db",
-    "@repo/api"
-  ],
+  transpilePackages: ["@repo/tailwind", "@repo/mantine-ui", "@repo/api"],
 
   images: {
     remotePatterns: [
-      { hostname: "randomuser.me" },
-      { hostname: "cwergvogslzhnsjhfofx.supabase.co" },
+      { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
       { hostname: "127.0.0.1" },
       { hostname: "localhost" }
     ]

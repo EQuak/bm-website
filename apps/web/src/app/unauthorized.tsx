@@ -1,6 +1,6 @@
 "use client"
 
-import { CustomErrorPage } from "./(errors)/CustomErrorPage"
+import { CustomErrorPage } from "#/components/CustomErrorPage"
 
 export default function Unauthorized() {
   return (

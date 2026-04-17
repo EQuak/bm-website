@@ -2,54 +2,57 @@ import type { MantineColorsTuple } from "@repo/mantine-ui"
 import {
   createTheme,
   DEFAULT_THEME,
-  Fieldset,
   mergeMantineTheme,
   NavLink
 } from "@repo/mantine-ui"
-import { Figtree } from "next/font/google"
+import { Plus_Jakarta_Sans } from "next/font/google"
 
-const wine: MantineColorsTuple = [
-  "#F5F5F5",
-  "#E0E0E0",
-  "#BDBDBD",
-  "#9E9E9E",
-  "#757575",
-  "#393939",
-  "#2D2D2D",
-  "#212121",
-  "#151515",
-  "#0A0A0A"
+/**
+ * Brand accent — matches the live BM mark: red rule (#dc2626) on black.
+ * `meridian.6` is the stripe red; `meridian.9` is near‑black for dark bands.
+ */
+const meridian: MantineColorsTuple = [
+  "#fff5f5",
+  "#fee2e2",
+  "#fecaca",
+  "#fca5a5",
+  "#f87171",
+  "#ef4444",
+  "#dc2626",
+  "#b91c1c",
+  "#7f1d1d",
+  "#0a0a0a"
 ] as const
 
-const sans = Figtree({
+const sans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "700"]
+  weight: ["400", "500", "600", "700"]
 })
 
 let defaultTheme = createTheme({
   fontFamily: sans.style.fontFamily,
+  headings: {
+    fontFamily: sans.style.fontFamily,
+    fontWeight: "600",
+    sizes: {
+      h1: { fontSize: "clamp(2rem, 4vw, 2.75rem)", lineHeight: "1.15" },
+      h2: { fontSize: "clamp(1.5rem, 3vw, 2rem)", lineHeight: "1.25" },
+      h3: { fontSize: "1.25rem", lineHeight: "1.35" }
+    }
+  },
   cursorType: "pointer",
-  primaryColor: "wine",
+  primaryColor: "meridian",
+  defaultRadius: "md",
   colors: {
-    wine
+    meridian
   },
   components: {
     NavLink: NavLink.extend({
       defaultProps: {
         classNames: {
-          root: "p-0 py-2 rounded-md overflow-hidden",
-          section:
-            "w-[40px] flex items-centerdata-[position=right]:lg:flex data-[position=right]:justify-end data-[position=right]:w-[16px] data-[position=right]:mr-2 justify-center mx-0",
-          label: "opacity-100 ml-2 text-[16px]",
-          children: "opacity-100 block",
-          chevron: "opacity-100 block"
-        }
-      }
-    }),
-    FieldSet: Fieldset.extend({
-      defaultProps: {
-        classNames: {
-          root: "asdasd"
+          root: "rounded-lg",
+          section: "data-[position=left]:mr-2",
+          label: "font-medium"
         }
       }
     })

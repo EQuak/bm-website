@@ -234,7 +234,10 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             // Clear fixed header so inner pages match landing text inset
             paddingTop: `${SITE_HEADER_HEIGHT_PX}px`,
             paddingBottom: 0,
-            minHeight: `calc(100dvh - ${SITE_HEADER_HEIGHT_PX}px)`
+            minHeight: `calc(100dvh - ${SITE_HEADER_HEIGHT_PX}px)`,
+            // Keep page content full-width so centered `Container` blocks align with the header
+            alignItems: "stretch",
+            width: "100%"
           }
         }}
       >

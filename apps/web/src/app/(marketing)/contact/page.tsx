@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  Badge,
   Box,
   Button,
   Container,
@@ -43,22 +44,38 @@ export default function ContactPage() {
   })
 
   return (
-    <>
-      <MarketingFirstSection bg="gray.0">
+    <Stack component="article" gap={0} w="100%" maw="100%" bg="gray.0">
+      <MarketingFirstSection bg="meridian.9" c="white">
         <MarketingHeroContainer>
-          <Title order={1} mb="xs">
-            Let&apos;s start with the problem—not the proposal
-          </Title>
-          <Text c="dimmed" size="lg" lh={1.65}>
-            Share context on what you are trying to change. I&apos;ll follow up
-            within two business days with next steps—or a candid note if
-            I&apos;m not the right fit.
-          </Text>
+          <Stack gap="xl">
+            <Badge
+              color="meridian"
+              variant="filled"
+              size="lg"
+              radius="sm"
+              tt="none"
+              w="fit-content"
+            >
+              Contact
+            </Badge>
+            <Title
+              order={1}
+              fz={{ base: "2rem", md: "2.65rem" }}
+              style={{ textWrap: "balance" as const }}
+            >
+              Let&apos;s start with the problem—not the proposal
+            </Title>
+            <Text size="lg" c="gray.3" lh={1.7} maw={640}>
+              Share context on what you are trying to change. I&apos;ll follow
+              up within two business days with next steps—or a candid note if
+              I&apos;m not the right fit.
+            </Text>
+          </Stack>
         </MarketingHeroContainer>
       </MarketingFirstSection>
 
-      <Container size="xl" pb={{ base: 56, md: 80 }} px="md">
-        <Grid gutter={{ base: "lg", md: 40 }}>
+      <Container size="xl" py={{ base: 48, md: 72 }} px="md" mx="auto" w="100%">
+        <Grid gutter={{ base: 32, md: 48 }} align="center">
           <Grid.Col span={{ base: 12, md: 5 }}>
             <Paper
               radius="lg"
@@ -200,6 +217,6 @@ export default function ContactPage() {
           </Grid.Col>
         </Grid>
       </Container>
-    </>
+    </Stack>
   )
 }

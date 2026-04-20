@@ -1,16 +1,49 @@
 "use client"
 
-import type { BoxProps } from "@repo/mantine-ui"
-import { LogoVariant14 } from "./logo-lab/LogoVariants"
+import { Box, type BoxProps } from "@repo/mantine-ui"
+import Image from "next/image"
 
 type BmMonogramLogoProps = {
-  /** Pixel width/height (square) */
+  /** Pixel height (logo preserves aspect ratio) */
   size?: number
 } & Omit<BoxProps, "children">
 
-/**
- * Blake Miller site mark — same as logo-lab **variant 14** (black tile, white BM, red rule).
- */
 export function BmMonogramLogo({ size = 40, ...rest }: BmMonogramLogoProps) {
-  return <LogoVariant14 size={size} {...rest} />
+  // `bm-logo-cropped.png` is 820×520
+  const aspectRatio = 820 / 520
+  const width = Math.round(size * aspectRatio)
+  const padding = Math.max(2, Math.round(size * 0.06))
+
+  return (
+    <Box
+      w={width}
+      h={size}
+      miw={width}
+      flex="0 0 auto"
+      {...rest}
+      pos="relative"
+      style={{ overflow: "hidden" }}
+      role="img"
+      aria-label="B Miller Consulting LLC"
+    >
+      <Box
+        pos="absolute"
+        style={{
+          top: padding,
+          left: padding,
+          right: padding,
+          bottom: padding
+        }}
+      >
+        <Image
+          src="/bm-logo-cropped.png"
+          alt="B Miller Consulting LLC"
+          fill
+          sizes={`${width}px`}
+          style={{ objectFit: "contain" }}
+          priority={size >= 64}
+        />
+      </Box>
+    </Box>
+  )
 }

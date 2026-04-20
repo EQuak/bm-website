@@ -27,16 +27,16 @@ import { images } from "#/lib/consulting-images"
 
 const principles = [
   {
-    title: "Ground truth first",
-    body: "Interviews, artifacts, and numbers—so recommendations match how decisions really get made."
+    title: "Owner vision, made operational",
+    body: "We translate what you want the business to become into priorities, roles, and rhythms people can actually run."
   },
   {
-    title: "Direct, kind feedback",
-    body: "Clear tradeoffs and honest reads on risk. No vague “it depends” without a path to decide."
+    title: "Honest assessment, no drama",
+    body: "A clear read on what’s weak—process, leadership, or execution—without blame, and with a path forward."
   },
   {
-    title: "Built to outlast me",
-    body: "Rituals, owners, and metrics your teams can run without a retainer—transfer is part of the scope."
+    title: "Systems that reduce reliance",
+    body: "Delegation, decision rights, and simple systems so the business runs for you—not because of you."
   }
 ] as const
 
@@ -61,12 +61,14 @@ export default function AboutPage() {
               fz={{ base: "2rem", md: "2.65rem" }}
               style={{ textWrap: "balance" as const }}
             >
-              Experience in the arena—not just the slide deck
+              Building clarity, structure, and momentum—without losing the
+              owner’s intent
             </Title>
             <Text size="lg" c="gray.3" lh={1.7} maw={640}>
-              From first workshop to final readout, the same person stays in the
-              room with you: clear ownership, fewer handoffs, and no surprise
-              substitutions once work is underway.
+              I partner with owners and executive teams to align on direction,
+              uncover what’s holding execution back, strengthen what’s already
+              working, and build practical solutions around how the owner wants
+              to lead.
             </Text>
           </Stack>
         </MarketingHeroContainer>
@@ -90,10 +92,10 @@ export default function AboutPage() {
                 <Title order={2}>Philosophy</Title>
               </div>
               <Text c="dimmed" size="lg" lh={1.75}>
-                Strategy fails when it floats above reality. I start from
-                operating truth—how decisions get made, where work really
-                happens, and what your customers experience—then design
-                interventions your organization can sustain.
+                Clarity is a multiplier. When goals, priorities, and roles are
+                explicit, teams execute with less noise. I start with operating
+                truth—how decisions get made and where work actually gets stuck—
+                then build a plan your leaders can run without heroics.
               </Text>
               <List
                 spacing="sm"
@@ -110,14 +112,13 @@ export default function AboutPage() {
                 }
               >
                 <List.Item>
-                  Decisions and forums over anonymous slide stacks
+                  Alignment on direction before adding new initiatives
                 </List.Item>
                 <List.Item>
-                  Actionable within weeks—not a 200‑slide “strategy” nobody runs
+                  Clear ownership, delegation, and decision rights
                 </List.Item>
                 <List.Item>
-                  Explicit tradeoffs: what we&apos;re optimizing for, and what
-                  we&apos;re not
+                  Practical systems that fit the owner’s vision and role
                 </List.Item>
               </List>
             </Stack>
@@ -159,13 +160,13 @@ export default function AboutPage() {
             </Badge>
             <Title order={2}>How I engage</Title>
             <Text c="dimmed" size="sm" lh={1.65}>
-              A repeatable arc—fast learning, sharp choices, then activation
-              alongside your operators.
+              A repeatable arc—alignment, assessment, then building the systems
+              and delegation that make execution durable.
             </Text>
           </Stack>
           <Timeline bulletSize={28} lineWidth={3} color="meridian">
             <Timeline.Item
-              title="Immersion"
+              title="Alignment"
               bullet={
                 <Text size="xs" fw={700}>
                   1
@@ -173,13 +174,13 @@ export default function AboutPage() {
               }
             >
               <Text c="dimmed" size="sm" lh={1.65}>
-                Stakeholder interviews, artifact review, and quantitative
-                baselines—compressed into a tight calendar so I learn fast
-                without freezing your teams.
+                We clarify the owner’s vision and align leaders on goals,
+                priorities, and what “good” looks like—so the work has a clear
+                direction and tradeoffs are explicit.
               </Text>
             </Timeline.Item>
             <Timeline.Item
-              title="Synthesis & options"
+              title="Assessment"
               bullet={
                 <Text size="xs" fw={700}>
                   2
@@ -187,13 +188,13 @@ export default function AboutPage() {
               }
             >
               <Text c="dimmed" size="sm" lh={1.65}>
-                I pressure‑test scenarios with your leaders, quantify tradeoffs,
-                and converge on a recommended path with explicit decision
-                rights.
+                An honest look at what’s breaking: operational weaknesses,
+                leadership gaps, and where execution gets stuck—grounded in
+                interviews, artifacts, and the numbers.
               </Text>
             </Timeline.Item>
             <Timeline.Item
-              title="Activation"
+              title="Build & embed"
               bullet={
                 <Text size="xs" fw={700}>
                   3
@@ -201,8 +202,9 @@ export default function AboutPage() {
               }
             >
               <Text c="dimmed" size="sm" lh={1.65}>
-                Playbooks, rituals, and metrics—implemented alongside your
-                operators until the new cadence feels native.
+                Tailored solutions based on the owner’s role: systems,
+                delegation, decision rights, and simple rhythms—embedded until
+                the business can run with less day‑to‑day reliance on them.
               </Text>
             </Timeline.Item>
           </Timeline>

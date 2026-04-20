@@ -1,12 +1,11 @@
 export const siteConfig = {
   /** Primary name in the header, footer, and metadata */
-  name: "BMiller Consulting",
+  name: "B Miller Consulting",
   /** Short line under the name in the header (desktop) */
-  headline: "Independent consultant",
-  tagline:
-    "I help leaders cut through complexity, align teams, and ship outcomes that last.",
+  headline: "Partner to owners & leadership teams",
+  tagline: "Building businesses that run with clarity and intention.",
   description:
-    "Independent consultant partnering with executives and operators who need sharp thinking, honest facilitation, and practical plans they can run without a big firm on retainer.",
+    "I partner with business owners and executive teams to align on goals, uncover weaknesses, strengthen what’s already working, and build practical solutions around the owner’s vision—so the business runs for the owner, not the other way around.",
   url: process.env.NEXT_PUBLIC_APP_URL ?? "https://bmillerconsulting.com",
   ogImage: "",
   email: "hello@bmillerconsulting.com",

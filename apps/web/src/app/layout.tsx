@@ -19,10 +19,28 @@ export const metadata: Metadata = {
     template: `%s · ${siteConfig.name}`
   },
   description: siteConfig.description,
+  icons: {
+    icon: [{ url: "/bm-logo-cropped.png", type: "image/png" }],
+    apple: [{ url: "/bm-logo-cropped.png", type: "image/png" }]
+  },
   openGraph: {
     title: siteConfig.name,
     description: siteConfig.tagline,
-    siteName: siteConfig.name
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: "/bm-logo-cropped.png",
+        width: 820,
+        height: 520,
+        alt: siteConfig.name
+      }
+    ]
+  },
+  twitter: {
+    card: "summary",
+    title: siteConfig.name,
+    description: siteConfig.tagline,
+    images: ["/bm-logo-cropped.png"]
   }
 }
 

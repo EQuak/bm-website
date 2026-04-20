@@ -40,24 +40,12 @@ import { images } from "#/lib/consulting-images"
 
 const HOME_PROOF_STATS = [
   {
-    label: "Years in practice",
-    value: "12+",
-    sub: "Strategy, ops & transformation"
-  },
-  {
-    label: "Engagements led",
-    value: "50+",
-    sub: "As principal consultant"
+    label: "Revenue range of clients",
+    value: "$400k - $80M"
   },
   {
     label: "Time to first insight",
-    value: "2–4 wks",
-    sub: "Typical discovery window"
-  },
-  {
-    label: "Repeat & referral work",
-    value: "Most",
-    sub: "Of my business is from people I’ve worked with before"
+    value: "1-2 weeks"
   }
 ] as const
 
@@ -78,7 +66,7 @@ export default function HomePage() {
           style={{ objectFit: "cover", objectPosition: "center" }}
         />
         <Overlay
-          gradient="linear-gradient(115deg, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.58) 45%, rgba(220,38,38,0.22) 100%)"
+          gradient="linear-gradient(115deg, rgba(11,45,92,0.92) 0%, rgba(11,45,92,0.58) 45%, rgba(47,111,179,0.22) 100%)"
           opacity={1}
           zIndex={1}
         />
@@ -111,10 +99,14 @@ export default function HomePage() {
               style={{ textWrap: "balance" as const }}
               fz={{ base: "2rem", sm: "2.5rem", md: "3rem" }}
             >
-              Clarity for complex decisions. Momentum for what comes next.
+              Building businesses that run with clarity and intention.
             </Title>
-            <Text size="lg" c="gray.2" maw={560} lh={1.65}>
-              {siteConfig.tagline}
+            <Text size="lg" c="gray.2" maw={680} lh={1.65}>
+              I partner with business owners and executive teams to align on
+              goals, uncover weaknesses, strengthen what’s already working, and
+              build practical solutions around the owner’s vision—whether the
+              owner stays deeply involved or you’re building the structure and
+              delegation to rely on them less every day.
             </Text>
             <Group gap="md" mt="sm" wrap="wrap">
               <Button
@@ -166,32 +158,45 @@ export default function HomePage() {
                 appendix
               </Title>
             </Stack>
-            <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="xl">
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="lg">
               {HOME_PROOF_STATS.map((stat) => (
-                <Box
+                <Card
                   key={stat.label}
-                  pl="md"
+                  padding="xl"
+                  radius="lg"
+                  withBorder
+                  shadow="sm"
                   style={{
-                    borderLeft: "4px solid var(--mantine-color-meridian-6)"
+                    background:
+                      "linear-gradient(180deg, var(--mantine-color-gray-0) 0%, white 100%)"
                   }}
                 >
-                  <Text size="xs" tt="uppercase" fw={700} c="dimmed">
-                    {stat.label}
-                  </Text>
-                  <Text
-                    fz={{ base: "2.35rem", md: "2.65rem" }}
-                    fw={800}
-                    lh={1.05}
-                    mt={10}
-                    c="gray.9"
-                    style={{ fontVariantNumeric: "tabular-nums" }}
-                  >
-                    {stat.value}
-                  </Text>
-                  <Text size="sm" c="dimmed" mt="sm" lh={1.65} maw={260}>
-                    {stat.sub}
-                  </Text>
-                </Box>
+                  <Stack gap="xs">
+                    <Group gap="sm" justify="space-between" wrap="nowrap">
+                      <Text size="xs" tt="uppercase" fw={800} c="dimmed">
+                        {stat.label}
+                      </Text>
+                      <Box
+                        w={10}
+                        h={10}
+                        style={{
+                          borderRadius: 999,
+                          background:
+                            "linear-gradient(135deg, var(--mantine-color-meridian-5), var(--mantine-color-meridian-8))"
+                        }}
+                      />
+                    </Group>
+                    <Text
+                      fz={{ base: "2.35rem", md: "2.75rem" }}
+                      fw={800}
+                      lh={1.05}
+                      c="gray.9"
+                      style={{ fontVariantNumeric: "tabular-nums" }}
+                    >
+                      {stat.value}
+                    </Text>
+                  </Stack>
+                </Card>
               ))}
             </SimpleGrid>
           </Stack>
@@ -231,11 +236,12 @@ export default function HomePage() {
                 >
                   How I work
                 </Badge>
-                <Title order={2}>Partnership, not paperwork factories</Title>
+                <Title order={2}>Clarity first. Then durable execution.</Title>
                 <Text c="dimmed" size="lg" lh={1.7}>
-                  I embed with your leadership team—facilitating tradeoffs,
-                  pressure‑testing assumptions, and building playbooks your
-                  operators can run without me on speed‑dial forever.
+                  I help owners and leadership teams move from “busy” to
+                  intentional: clear priorities, an honest view of what’s
+                  breaking, and a practical plan that fits how the owner wants
+                  to lead.
                 </Text>
                 <List
                   spacing="sm"
@@ -253,13 +259,21 @@ export default function HomePage() {
                   }
                 >
                   <List.Item>
-                    Sprint‑based discovery with crisp decision gates
+                    Clear alignment on goals, priorities, and direction
                   </List.Item>
                   <List.Item>
-                    Executive‑ready narratives and measurable outcomes
+                    Honest assessment of operational weaknesses and leadership
+                    gaps
                   </List.Item>
                   <List.Item>
-                    Knowledge transfer baked into every engagement
+                    Strategic use of existing strengths and advantages
+                  </List.Item>
+                  <List.Item>
+                    Tailored solutions based on the owner’s vision and role
+                  </List.Item>
+                  <List.Item>
+                    Systems and delegation that help the business run for the
+                    owner—not the other way around
                   </List.Item>
                 </List>
                 <Button
@@ -272,7 +286,7 @@ export default function HomePage() {
                   rightSection={<IconArrowRight size={16} />}
                   w="fit-content"
                 >
-                  About me
+                  About the approach
                 </Button>
               </Stack>
             </Grid.Col>
@@ -311,7 +325,7 @@ export default function HomePage() {
             {[
               {
                 title: "Growth & GTM",
-                body: "Segmentation, packaging, and sales motion design grounded in unit economics you can defend in the boardroom.",
+                body: "Clarify your offer, tighten execution, and build a sales motion that fits your team—not a playbook you can’t sustain.",
                 icon: IconChartDots
               },
               {
@@ -497,9 +511,9 @@ export default function HomePage() {
                   not quarters.”
                 </Title>
                 <Text c="dimmed" lh={1.7} mb="lg">
-                  CFO, Series C infrastructure software · Program to reset
-                  planning cadence and portfolio governance across 6 product
-                  lines.
+                  Owner, services business · Built a clear cadence and
+                  delegation plan so the team could execute without constant
+                  escalation.
                 </Text>
                 <Group
                   justify="space-between"
@@ -508,7 +522,7 @@ export default function HomePage() {
                   gap="md"
                 >
                   <Text size="sm" fw={600}>
-                    VP Strategy, Fortune 500 industrial
+                    Managing Partner
                   </Text>
                   <Button
                     component={Link}

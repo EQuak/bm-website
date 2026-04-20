@@ -36,58 +36,58 @@ import { images } from "#/lib/consulting-images"
 
 const offerings = [
   {
-    title: "Corporate & business unit strategy",
+    title: "Goal alignment & priorities",
     summary:
-      "Where to play, how to win, and what to stop doing—grounded in markets, capabilities, and capital reality.",
+      "Get clear on direction, tradeoffs, and what stops now—so teams execute the same plan, not five versions of it.",
     icon: IconChartInfographic,
     bullets: [
-      "Portfolio & synergy reviews",
-      "Competitive positioning & narrative",
-      "Investment thesis support for M&A"
+      "Leadership alignment sessions",
+      "Priority and roadmap clarity",
+      "Decision-making and tradeoff framework"
     ]
   },
   {
-    title: "Operating model & governance",
+    title: "Operations assessment & fixes",
     summary:
-      "Decision rights, interfaces, and cadence that reduce coordination tax and speed up execution.",
+      "Identify operational weaknesses and leadership gaps, then fix the few things that unlock execution.",
     icon: IconHierarchy,
     bullets: [
-      "RACI modernization & forum design",
-      "Planning & budgeting rhythm",
-      "Shared services / center of excellence design"
+      "Workflow and handoff diagnosis",
+      "Roles, accountability, and ownership",
+      "Simple operating rhythm (weekly/monthly)"
     ]
   },
   {
-    title: "Revenue operations & GTM",
+    title: "Strengths-led growth",
     summary:
-      "Pipeline mechanics, forecasting discipline, and packaging that aligns sales, marketing, and success.",
+      "Double down on what’s already working—then strengthen the systems around it to scale without chaos.",
     icon: IconUsersGroup,
     bullets: [
-      "Segmentation & ICP refresh",
-      "Pricing & packaging experiments",
-      "Forecast & coverage diagnostics"
+      "Packaging and offer clarity",
+      "Sales execution and pipeline discipline",
+      "Customer retention and expansion levers"
     ]
   },
   {
-    title: "Transformation program leadership",
+    title: "Delegation & systems",
     summary:
-      "Executive PMO, risk dashboards, and stakeholder choreography for programs too big to manage informally.",
+      "Build the structure required for the business to rely less on the owner every day—without losing the owner’s intent.",
     icon: IconBuildingSkyscraper,
     bullets: [
-      "Stage‑gate governance",
-      "Benefits tracking & value assurance",
-      "Change heatmaps & adoption plans"
+      "Decision rights and escalation paths",
+      "Leadership team operating cadence",
+      "Delegation plan and handoff systems"
     ]
   },
   {
-    title: "Technology & data advisory",
+    title: "Tools that support the system",
     summary:
-      "Vendor selection, architecture guardrails, and analytics roadmaps that match ambition to maintainability.",
+      "Right-size tools and reporting to reinforce your operating system—not add more complexity.",
     icon: IconCpu,
     bullets: [
-      "Requirements & RFP shaping",
-      "Integration sequencing",
-      "Analytics operating model"
+      "Reporting that matches decision cadence",
+      "Lightweight systems and automations",
+      "Tool selection and implementation guidance"
     ]
   }
 ] as const
@@ -113,7 +113,7 @@ export default function ServicesPage() {
           inset={0}
           style={{
             background:
-              "linear-gradient(90deg, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.55) 55%, rgba(220,38,38,0.2) 100%)"
+              "linear-gradient(90deg, rgba(11,45,92,0.92) 0%, rgba(11,45,92,0.55) 55%, rgba(47,111,179,0.2) 100%)"
           }}
         />
         <MarketingHeroContainer
@@ -138,12 +138,13 @@ export default function ServicesPage() {
               fz={{ base: "2rem", md: "2.75rem" }}
               style={{ textWrap: "balance" as const }}
             >
-              Hands‑on support for the decisions that shape your trajectory
+              Practical support to build a business that runs with less friction
             </Title>
             <Text c="gray.2" size="lg" lh={1.65}>
-              Every engagement is tailored—mix and match modules, or ask me to
-              design something bespoke for a critical moment (IPO readiness,
-              post‑merger integration, a new CEO transition, and more).
+              Every engagement is tailored around the owner’s vision and role.
+              Sometimes that means improving execution with the owner deeply
+              involved. Other times it means building the structure, delegation,
+              and systems required to rely on them less every day.
             </Text>
             <Button
               component={Link}
@@ -246,32 +247,34 @@ export default function ServicesPage() {
                 defaultValue="embedded"
               >
                 <Accordion.Item value="embedded">
-                  <Accordion.Control>Embedded teams</Accordion.Control>
+                  <Accordion.Control>Embedded implementation</Accordion.Control>
                   <Accordion.Panel>
                     <Text c="dimmed" size="sm" lh={1.65}>
-                      For complex programs I work alongside your PMO—typically
-                      2–4 days per week on‑site or remote, with clear exit
-                      criteria.
+                      I work alongside you and your team (on-site or remote) to
+                      implement systems, delegation, and rhythm until the new
+                      way of operating sticks.
                     </Text>
                   </Accordion.Panel>
                 </Accordion.Item>
                 <Accordion.Item value="sprints">
-                  <Accordion.Control>Executive sprints</Accordion.Control>
+                  <Accordion.Control>
+                    Owner & leadership sprints
+                  </Accordion.Control>
                   <Accordion.Panel>
                     <Text c="dimmed" size="sm" lh={1.65}>
-                      High‑intensity workshops (1–3 days) I facilitate to unlock
-                      a specific decision: pricing reset, portfolio cut, or
-                      leadership team charter.
+                      High‑intensity sessions (1–3 days) to align on goals and
+                      priorities, surface what’s weak, and leave with a clear
+                      plan—roles, owners, and next steps.
                     </Text>
                   </Accordion.Panel>
                 </Accordion.Item>
                 <Accordion.Item value="advisory">
-                  <Accordion.Control>Advisory retainers</Accordion.Control>
+                  <Accordion.Control>Advisory support</Accordion.Control>
                   <Accordion.Panel>
                     <Text c="dimmed" size="sm" lh={1.65}>
-                      For CEOs and CFOs navigating a volatile year—an on‑call
-                      sounding board, prep for board or investor moments, and
-                      light‑touch diagnostics from me directly.
+                      An on‑call partner for owners and executives—pressure‑test
+                      decisions, spot risks early, and keep priorities tight
+                      when the week is noisy.
                     </Text>
                   </Accordion.Panel>
                 </Accordion.Item>

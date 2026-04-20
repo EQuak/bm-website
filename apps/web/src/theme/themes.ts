@@ -8,20 +8,20 @@ import {
 import { Plus_Jakarta_Sans } from "next/font/google"
 
 /**
- * Brand accent — matches the live BM mark: red rule (#dc2626) on black.
- * `meridian.6` is the stripe red; `meridian.9` is near‑black for dark bands.
+ * Brand accent — matched to `public/bm-logo.png` (navy + mid blue + blue-gray).
+ * `meridian.6` is the primary accent; `meridian.9` is the deep navy for dark bands.
  */
 const meridian: MantineColorsTuple = [
-  "#fff5f5",
-  "#fee2e2",
-  "#fecaca",
-  "#fca5a5",
-  "#f87171",
-  "#ef4444",
-  "#dc2626",
-  "#b91c1c",
-  "#7f1d1d",
-  "#0a0a0a"
+  "#f2f6fb",
+  "#e6eef8",
+  "#c9d9ef",
+  "#a9c2e6",
+  "#7fa3d6",
+  "#5e89c8",
+  "#2f6fb3",
+  "#1f5591",
+  "#143b66",
+  "#0b2d5c"
 ] as const
 
 const sans = Plus_Jakarta_Sans({

@@ -94,7 +94,7 @@ function NavLinks({
                 paddingInline: rem(4),
                 borderRadius: "var(--mantine-radius-sm)",
                 backgroundColor: active
-                  ? "light-dark(var(--mantine-color-meridian-0), rgba(220, 38, 38, 0.12))"
+                  ? "light-dark(var(--mantine-color-meridian-0), rgba(47, 111, 179, 0.18))"
                   : undefined
               })
         }}
@@ -256,7 +256,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               align="stretch"
             >
               <Group gap="sm" wrap="nowrap" align="center">
-                <BmMonogramLogo size={40} />
+                <BmMonogramLogo size={100} />
                 <Box
                   component={Link}
                   href="/"
